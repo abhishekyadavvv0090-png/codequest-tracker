@@ -16,7 +16,7 @@ Track daily progress while following AK's strategic learning methodology for DSA
 
 ## 🚀 Live Demo
 
-https://yourusername.github.io/codequest-tracker
+https://abhishekyadavvv0090-png.github.io/codequest-tracker
 
 ## 🛠️ Built With
 
