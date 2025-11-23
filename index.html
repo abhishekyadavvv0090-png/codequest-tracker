@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeQuest Tracker - DSA Mastery Journey</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --neon-glow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Glass Morphism Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Header with Personalized Greeting */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .user-greeting {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .sub-greeting {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .streak-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 25px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mission Header */
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mission-header h2 {
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .xp-badge {
+            background: var(--gradient);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Quotes Section */
+        .motivation-engine {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .main-quote {
+            font-size: 1.3rem;
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .quote-carousel {
+            font-size: 1rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        /* AK's Battle Plan */
+        .commandments-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .rule-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .rule-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        .rule-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--gray);
+            appearance: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .rule-card input[type="checkbox"]:checked {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .rule-card input[type="checkbox"]:checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+
+        /* Learning Path */
+        .phase {
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .phase.active {
+            border-left: 4px solid var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .phase.locked {
+            opacity: 0.6;
+            border-left: 4px solid var(--gray);
+        }
+
+        .phase.completed {
+            border-left: 4px solid var(--accent);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .current-lecture {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        /* Progress Rings */
+        .progress-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, var(--gray) 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+            animation: rotate 3s linear infinite;
+        }
+
+        .progress-ring::before {
+            content: attr(data-progress);
+            position: absolute;
+            font-weight: bold;
+            font-size: 1.4rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Practice Sections */
+        .practice-sections {
+            display: grid;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .practice-card {
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+        }
+
+        .practice-card.unlocked {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .practice-card.locked {
+            border-color: var(--gray);
+            background: rgba(100, 116, 139, 0.1);
+            opacity: 0.7;
+        }
+
+        .task-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid var(--gray);
+            appearance: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .task-item input[type="checkbox"]:checked {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .task-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Buttons */
+        .complete-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: var(--neon-glow);
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Sidebar Stats */
+        .stat-card {
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item strong {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+        }
+
+        /* Thinking Gym */
+        .thinking-gym {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .timer {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-in {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            top: -10px;
+            animation: confetti-fall 3s linear forwards;
+            border-radius: 50%;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Unlock Progress */
+        .progress-requirement {
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .unlock-info {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Personalized Greeting -->
+        <header class="header">
+            <div class="user-greeting">🚀 NAMASTE, YADAV JEE! 🎯</div>
+            <div class="sub-greeting">Ready to conquer DSA today?</div>
+            <div class="streak-counter">
+                🔥 Day <span id="currentDay">1</span> of 163
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Daily Mission -->
+                <div class="glass-card animate-in">
+                    <div class="mission-header">
+                        <h2>🎯 TODAY'S MISSION</h2>
+                        <div class="xp-badge">+50 XP</div>
+                    </div>
+                    
+                    <!-- Motivation Engine -->
+                    <div class="motivation-engine">
+                        <div class="main-quote" id="mainQuote">
+                            "Consistency is what transforms average into EXCELLENCE. Today's effort × 163 days = DSA MASTERY! 🚀"
+                        </div>
+                        <div class="quote-carousel" id="rotatingQuote">
+                            "Consistency beats talent when talent doesn't show up consistently."
+                        </div>
+                    </div>
+
+                    <!-- AK's Battle Plan -->
+                    <div class="commandments-section">
+                        <h3>⚔️ AK'S BATTLE PLAN</h3>
+                        <div class="commandments-grid">
+                            <div class="rule-card">
+                                <input type="checkbox" id="rule1" onchange="updateProgress()">
+                                <label for="rule1">✅ CODE ALONG - Pause & type every example</label>
+                            </div>
+                            <div class="rule-card">
+                                <input type="checkbox" id="rule2" onchange="updateProgress()">
+                                <label for="rule2">✅ SOLVE 3-5 PROBLEMS - 2 Easy, 2 Medium, 1 Hard</label>
+                            </div>
+                            <div class="rule-card">
+                                <input type="checkbox" id="rule3" onchange="updateProgress()">
+                                <label for="rule3">✅ TOPIC MASTERY - Don't move on until solving 3E/5M/1H</label>
+                            </div>
+                            <div class="rule-card">
+                                <input type="checkbox" id="rule4" onchange="updateProgress()">
+                                <label for="rule4">✅ GITHUB PUSH - Add today's code to your DSA repo</label>
+                            </div>
+                            <div class="rule-card">
+                                <input type="checkbox" id="rule5" onchange="updateProgress()">
+                                <label for="rule5">✅ THINKING PRACTICE - Pause & plan before watching solutions</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Path -->
+                    <div class="learning-path">
+                        <h3>📚 LEARNING JOURNEY</h3>
+                        
+                        <!-- Phase 1: Active -->
+                        <div class="phase active">
+                            <h4>🟢 PHASE 1: C++ Fundamentals (1/15)</h4>
+                            <div class="current-lecture">
+                                <h5>📹 TODAY'S LECTURE: #1/163</h5>
+                                <p><strong>Introduction To Programming for Beginners</strong></p>
+                                <p>Duration: 45 mins | Priority: High</p>
+                                <div class="progress-ring" data-progress="1%" id="lectureProgress"></div>
+                            </div>
+
+                            <!-- Practice Sections -->
+                            <div class="practice-sections">
+                                <!-- Basic Practice -->
+                                <div class="practice-card unlocked">
+                                    <h5>💻 BASIC EXERCISES (Unlocked)</h5>
+                                    <p>Reinforce today's concepts</p>
+                                    <ul class="task-list">
+                                        <li class="task-item">
+                                            <input type="checkbox" id="basic1" onchange="updateProgress()">
+                                            <label for="basic1">Write flowchart for sum program</label>
+                                        </li>
+                                        <li class="task-item">
+                                            <input type="checkbox" id="basic2" onchange="updateProgress()">
+                                            <label for="basic2">Practice pseudocode patterns</label>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- LeetCode Section (Locked) -->
+                                <div class="practice-card locked">
+                                    <h5>🧩 LEETCODE PROBLEMS (🔒 Locked)</h5>
+                                    <p class="unlock-info">Unlocks after Lecture 26 - STL Vectors</p>
+                                    <div class="progress-requirement">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 4%"></div>
+                                        </div>
+                                        <span>25 lectures to unlock</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thinking Gym -->
+                        <div class="thinking-gym">
+                            <h5>🧠 THINKING GYM</h5>
+                            <p><strong>Before watching solutions:</strong></p>
+                            <div class="thinking-questions">
+                                <div class="task-item">
+                                    <input type="checkbox" id="think1" onchange="updateProgress()">
+                                    <label for="think1">What's the brute force approach?</label>
+                                </div>
+                                <div class="task-item">
+                                    <input type="checkbox" id="think2" onchange="updateProgress()">
+                                    <label for="think2">Can I optimize time/space complexity?</label>
+                                </div>
+                            </div>
+                            <div class="timer" id="thinkingTimer">15:00</div>
+                            <button class="complete-btn" onclick="startThinkingTimer()" style="padding: 10px; font-size: 1rem;">
+                ⏱️ Start Thinking Timer
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="complete-btn" onclick="completeDay()">
+                        ✅ COMPLETE DAY 1 & CONTINUE JOURNEY
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Progress Stats -->
+                <div class="glass-card">
+                    <h3>📊 PROGRESS MAP</h3>
+                    <div class="stat-item">
+                        <span>Lectures Completed:</span>
+                        <strong id="lecturesCompleted">0/163</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Current Phase:</span>
+                        <strong>Phase 1 - Basics</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Problems Solved:</span>
+                        <strong id="problemsSolved">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>AK's Compliance:</span>
+                        <strong id="complianceScore">0%</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Next Unlock:</span>
+                        <strong>LeetCode in 25L</strong>
+                    </div>
+                </div>
+
+                <!-- GitHub Tracker -->
+                <div class="glass-card">
+                    <h3>🐙 DSA REPOSITORY</h3>
+                    <div class="stat-item">
+                        <span>Total Problems:</span>
+                        <strong id="githubProblems">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Today's Push:</span>
+                        <strong id="todayPush">Pending</strong>
+                    </div>
+                    <div class="today-contribution">
+                        <input type="text" id="commitMessage" placeholder="e.g., Added flowchart exercises" 
+                               style="width: 100%; padding: 8px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--gray); background: rgba(255,255,255,0.1); color: white;">
+                        <button onclick="markGitHubPush()" style="width: 100%; padding: 10px; background: var(--gradient); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            ✅ Mark as Pushed
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Monthly Revision -->
+                <div class="glass-card">
+                    <h3>📅 REVISION CYCLE</h3>
+                    <div class="phase active">
+                        <h5>🟢 MONTH 1: Basics Focus</h5>
+                        <div class="progress-requirement">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 3%"></div>
+                            </div>
+                            <span>Week 1/4 - Building Foundation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mistake Prevention -->
+                <div class="glass-card">
+                    <h3>🚫 AVOID THESE MISTAKES</h3>
+                    <div class="task-list">
+                        <div class="task-item">
+                            <input type="checkbox" id="mistake1" onchange="updateProgress()">
+                            <label for="mistake1">Watching at 2x speed</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" id="mistake2" onchange="updateProgress()">
+                            <label for="mistake2">Jumping topics randomly</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" id="mistake3" onchange="updateProgress()">
+                            <label for="mistake3">Comparing to others</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize app
+        let currentDay = parseInt(localStorage.getItem('currentDay')) || 1;
+        let completedLectures = parseInt(localStorage.getItem('completedLectures')) || 0;
+        let problemsSolved = parseInt(localStorage.getItem('problemsSolved')) || 0;
+        let githubProblems = parseInt(localStorage.getItem('githubProblems')) || 0;
+        let totalXP = parseInt(localStorage.getItem('totalXP')) || 0;
+        let thinkingTimer = null;
+
+        // Quotes database
+        const consistencyQuotes = [
+            "Consistency beats talent when talent doesn't show up consistently.",
+            "Small daily improvements lead to staggering long-term results.",
+            "The expert in anything was once a beginner who never gave up.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Success is the sum of small efforts repeated day in and day out.",
+            "The only way to learn programming is by writing programs daily.",
+            "Every master was once a disaster who refused to give up.",
+            "Your future self will thank you for today's effort."
+        ];
+
+        // Lecture titles (first 20 for example)
+        const lectureTitles = [
+            "Introduction To Programming for Beginners",
+            "Introduction to FlowCharts and PseudoCode",
+            "Start C++ from Zero and Write Your First Program", 
+            "If Else Statement And Loop in C++",
+            "For Loop in C++ – Advance",
+            "Solve Pattern Problems (Part 1)",
+            "Solve Pattern Problems (Part 2)",
+            "Solve Pattern Problems (Part 3)",
+            "Solve Pattern Problems (Part 4)",
+            "Operators in C++",
+            "While, Do-while Loop, Switch, Break, Continue",
+            "Conversions", 
+            "LeetCode Questions",
+            "Functions",
+            "C++ Series End here",
+            "Introduction To Arrays",
+            "Master Arrays by Solving Problems",
+            "Time and Space Complexity",
+            "SELECTION SORT",
+            "BUBBLE SORT"
+        ];
+
+        function init() {
+            updateDashboard();
+            showRandomQuote();
+            startQuoteRotation();
+        }
+
+        function updateDashboard() {
+            document.getElementById('currentDay').textContent = currentDay;
+            
+            const currentLecture = completedLectures + 1;
+            const lectureTitle = lectureTitles[completedLectures] || `Lecture ${currentLecture}`;
+            document.getElementById('lectureProgress').setAttribute('data-progress', `${Math.round((currentLecture/163)*100)}%`);
+            document.getElementById('lectureProgress').style.background = 
+                `conic-gradient(var(--primary) ${(currentLecture/163)*100}%, var(--gray) 0%)`;
+            
+            document.getElementById('lecturesCompleted').textContent = `${completedLectures}/163`;
+            document.getElementById('problemsSolved').textContent = problemsSolved;
+            document.getElementById('githubProblems').textContent = githubProblems;
+
+            // Calculate compliance score
+            const checkedRules = document.querySelectorAll('.rule-card input[type="checkbox"]:checked').length;
+            const totalRules = document.querySelectorAll('.rule-card input[type="checkbox"]').length;
+            const complianceScore = Math.round((checkedRules / totalRules) * 100);
+            document.getElementById('complianceScore').textContent = `${complianceScore}%`;
+        }
+
+        function showRandomQuote() {
+            const randomQuote = consistencyQuotes[Math.floor(Math.random() * consistencyQuotes.length)];
+            document.getElementById('mainQuote').textContent = `"${randomQuote}"`;
+        }
+
+        function startQuoteRotation() {
+            let quoteIndex = 0;
+            setInterval(() => {
+                document.getElementById('rotatingQuote').textContent = `"${consistencyQuotes[quoteIndex]}"`;
+                quoteIndex = (quoteIndex + 1) % consistencyQuotes.length;
+            }, 8000);
+        }
+
+        function startThinkingTimer() {
+            let timeLeft = 15 * 60; // 15 minutes in seconds
+            const timerElement = document.getElementById('thinkingTimer');
+            
+            thinkingTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(thinkingTimer);
+                    timerElement.textContent = "Time's up! 🎯";
+                    createConfetti();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function updateProgress() {
+            // Count checked tasks and problems
+            const checkedTasks = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            problemsSolved = Math.max(problemsSolved, checkedTasks);
+            
+            localStorage.setItem('problemsSolved', problemsSolved);
+            updateDashboard();
+        }
+
+        function markGitHubPush() {
+            const commitMessage = document.getElementById('commitMessage').value;
+            if (commitMessage.trim()) {
+                githubProblems++;
+                localStorage.setItem('githubProblems', githubProblems);
+                document.getElementById('todayPush').textContent = 'Done! 🎉';
+                document.getElementById('todayPush').style.color = '#10b981';
+                createConfetti();
+                
+                // Auto-uncheck after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('todayPush').textContent = 'Pending';
+                    document.getElementById('todayPush').style.color = '';
+                }, 2000);
+            }
+        }
+
+        function completeDay() {
+            // Celebrate!
+            createConfetti();
+            
+            // Update progress
+            currentDay++;
+            completedLectures++;
+            totalXP += 50;
+            
+            // Save to localStorage
+            localStorage.setItem('currentDay', currentDay);
+            localStorage.setItem('completedLectures', completedLectures);
+            localStorage.setItem('totalXP', totalXP);
+            
+            // Show success message
+            alert(`🎉 Day ${currentDay - 1} completed! +50 XP\nReady for Lecture ${completedLectures + 1} tomorrow!`);
+            
+            // Reset checkboxes for new day (except GitHub push)
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (!checkbox.id.includes('mistake')) {
+                    checkbox.checked = false;
+                }
+            });
+            
+            // Reset GitHub push status
+            document.getElementById('todayPush').textContent = 'Pending';
+            document.getElementById('todayPush').style.color = '';
+            document.getElementById('commitMessage').value = '';
+            
+            updateDashboard();
+            showRandomQuote();
+            
+            // Stop thinking timer if running
+            if (thinkingTimer) {
+                clearInterval(thinkingTimer);
+                document.getElementById('thinkingTimer').textContent = "15:00";
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = getRandomColor();
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
